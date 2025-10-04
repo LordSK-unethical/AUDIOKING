@@ -1,0 +1,475 @@
+/* Pages CSS - Minimal styles for batch, help, and settings pages */
+
+.page-content {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: calc(100vh - 120px);
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.page-subtitle {
+    font-size: 1.2rem;
+    color: #a8a8a8;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Batch Page Styles */
+.batch-container {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr;
+}
+
+.batch-upload-area {
+    background: #1a1a1a;
+    border: 2px dashed #333;
+    border-radius: 12px;
+    padding: 3rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.batch-upload-area:hover {
+    border-color: #555;
+    background: #222;
+}
+
+.batch-upload-area h3 {
+    color: #ffffff;
+    margin: 1rem 0;
+}
+
+.browse-btn {
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 6px;
+    margin: 0.5rem;
+    cursor: pointer;
+}
+
+.browse-btn:hover {
+    background: #444;
+}
+
+.batch-files-list {
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #333;
+}
+
+.files-container {
+    max-height: 300px;
+    overflow-y: auto;
+    margin: 1rem 0;
+}
+
+.batch-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.clear-btn, .start-batch-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.clear-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.start-batch-btn {
+    background: #28a745;
+    color: white;
+}
+
+.batch-settings {
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #333;
+}
+
+.batch-settings h3 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.setting-group {
+    margin-bottom: 1rem;
+}
+
+.setting-group label {
+    display: block;
+    color: #d0d0d0;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.setting-group select {
+    width: 100%;
+    padding: 0.8rem;
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 6px;
+    color: #fff;
+}
+
+.batch-progress {
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #333;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #333;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 1rem 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #28a745;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    display: flex;
+    justify-content: space-between;
+    color: #d0d0d0;
+    font-size: 0.9rem;
+}
+
+/* Help Page Styles */
+.help-container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2rem;
+}
+
+.help-sidebar {
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid #333;
+    height: fit-content;
+}
+
+.help-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.help-menu-item {
+    background: transparent;
+    border: none;
+    color: #d0d0d0;
+    padding: 0.8rem;
+    text-align: left;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.help-menu-item:hover, .help-menu-item.active {
+    background: #333;
+    color: #ffffff;
+}
+
+.help-content {
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid #333;
+}
+
+.help-topic {
+    display: none;
+}
+
+.help-topic.active {
+    display: block;
+}
+
+.help-topic h2 {
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+}
+
+.step-guide {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.step {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.step-number {
+    background: #333;
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.step-content h3 {
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.step-content p {
+    color: #d0d0d0;
+    line-height: 1.5;
+}
+
+.format-tables {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+.format-table h3 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.format-list {
+    list-style: none;
+    padding: 0;
+}
+
+.format-list li {
+    color: #d0d0d0;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #333;
+}
+
+.format-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.format-item {
+    padding: 1rem;
+    background: #222;
+    border-radius: 6px;
+}
+
+.format-item strong {
+    color: #ffffff;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.format-item p {
+    color: #d0d0d0;
+    font-size: 0.9rem;
+}
+
+/* Settings Page Styles */
+.settings-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.settings-section {
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #333;
+}
+
+.settings-section h3 {
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.setting-item {
+    margin-bottom: 1.5rem;
+}
+
+.setting-item label {
+    display: block;
+    color: #d0d0d0;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.setting-item select, .setting-item input[type="text"] {
+    width: 100%;
+    padding: 0.8rem;
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 6px;
+    color: #fff;
+}
+
+.folder-selector {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.folder-selector input {
+    flex: 1;
+}
+
+.browse-folder-btn {
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.browse-folder-btn:hover {
+    background: #444;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: #d0d0d0;
+    cursor: pointer;
+}
+
+.checkbox-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #6366f1;
+}
+
+.settings-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin: 2rem 0 4rem 0;
+    padding-bottom: 2rem;
+}
+
+.save-btn, .reset-btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    min-height: 50px;
+}
+
+.save-btn {
+    background: #28a745;
+    color: white;
+}
+
+.reset-btn {
+    background: #6c757d;
+    color: white;
+}
+
+.save-btn:hover {
+    background: #218838;
+}
+
+.reset-btn:hover {
+    background: #5a6268;
+}
+
+.back-btn {
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.back-btn:hover {
+    background: #444;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .help-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .help-sidebar {
+        order: 2;
+    }
+    
+    .help-content {
+        order: 1;
+    }
+    
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .format-tables {
+        grid-template-columns: 1fr;
+    }
+    
+    .folder-selector {
+        flex-direction: column;
+    }
+    
+    .settings-actions {
+        flex-direction: column;
+    }
+}

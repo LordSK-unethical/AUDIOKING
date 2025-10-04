@@ -1,0 +1,23 @@
+{
+  "app": {
+    "name": "My Electron App",
+    "version": "1.0.0",
+    "description": "A modern Electron application with HTML/CSS frontend"
+  },
+  "window": {
+    "width": 1200,
+    "height": 800,
+    "minWidth": 800,
+    "minHeight": 600,
+    "resizable": true
+  },
+  "development": {
+    "openDevTools": true,
+    "enableLogging": true
+  },
+  "features": {
+    "fileOperations": true,
+    "notifications": true,
+    "converter": true
+  }
+}

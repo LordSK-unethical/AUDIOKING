@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Help & Support - AUDIOKING</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <link rel="stylesheet" href="../css/theme.css">
+</head>
+<body>
+    <div class="app-window">
+        <div class="menu-bar">
+            <a href="../pages/converter.html" id="convert-nav" class="menu-item">Convert</a>
+            <a href="../pages/batch.html" id="batch-nav" class="menu-item">Batch Process</a>
+            <a href="../pages/settings.html" id="settings-nav" class="menu-item">Settings</a>
+            <a href="../pages/help.html" id="help-nav" class="menu-item active">Help</a>
+        </div>
+
+        <main class="page-content">
+            <div class="page-header">
+                <div class="unlock-badge">
+                    <span class="unlock-icon">❓</span>
+                    <span>Get Help & Support!</span>
+                    <span class="arrow">→</span>
+                </div>
+                <h1 class="page-title">Help & Support</h1>
+                <p class="page-subtitle">
+                    Find answers to common questions and get support for AUDIOKING.
+                </p>
+            </div>
+
+            <div class="help-container">
+                <div class="help-sidebar">
+                    <div class="help-menu">
+                        <button class="help-menu-item active" data-topic="getting-started">🚀 Getting Started</button>
+                        <button class="help-menu-item" data-topic="formats">🎵 Supported Formats</button>
+                        <button class="help-menu-item" data-topic="quality">⭐ Quality Settings</button>
+                        <button class="help-menu-item" data-topic="batch">⚡ Batch Processing</button>
+                        <button class="help-menu-item" data-topic="troubleshooting">🔧 Troubleshooting</button>
+                        <button class="help-menu-item" data-topic="shortcuts">⌨️ Keyboard Shortcuts</button>
+                    </div>
+                </div>
+
+                <div class="help-content">
+                    <div class="help-topic active" id="getting-started">
+                        <h2>Getting Started with AUDIOKING</h2>
+                        <div class="step-guide">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h3>Select Your Audio Files</h3>
+                                    <p>Click "Start Converting" or drag files directly to the converter interface.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h3>Choose Output Format</h3>
+                                    <p>Select from MP3, WAV, FLAC, or OPUS based on your needs.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h3>Adjust Quality Settings</h3>
+                                    <p>Set bitrate and sample rate for optimal file size and quality balance.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h3>Convert & Download</h3>
+                                    <p>Click convert and download your processed audio files.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="help-topic" id="formats">
+                        <h2>Supported Audio Formats</h2>
+                        <div class="format-tables">
+                            <div class="format-table">
+                                <h3>Input Formats (Can Read)</h3>
+                                <ul class="format-list">
+                                    <li>MP3 - MPEG Audio Layer III</li>
+                                    <li>WAV - Waveform Audio File Format</li>
+                                    <li>FLAC - Free Lossless Audio Codec</li>
+                                    <li>AAC - Advanced Audio Codec</li>
+                                    <li>OGG - Ogg Vorbis</li>
+                                    <li>M4A - MPEG-4 Audio</li>
+                                    <li>WMA - Windows Media Audio</li>
+                                    <li>AIFF - Audio Interchange File Format</li>
+                                    <li>OPUS - Opus Interactive Audio Codec</li>
+                                    <li>And more...</li>
+                                </ul>
+                            </div>
+                            <div class="format-table">
+                                <h3>Output Formats (Can Write)</h3>
+                                <div class="format-details">
+                                    <div class="format-item">
+                                        <strong>MP3</strong>
+                                        <p>Most compatible format, good for streaming and general use.</p>
+                                    </div>
+                                    <div class="format-item">
+                                        <strong>WAV</strong>
+                                        <p>Uncompressed format, highest quality but larger file sizes.</p>
+                                    </div>
+                                    <div class="format-item">
+                                        <strong>FLAC</strong>
+                                        <p>Lossless compression, perfect for archiving with smaller sizes.</p>
+                                    </div>
+                                    <div class="format-item">
+                                        <strong>OPUS</strong>
+                                        <p>Modern codec with excellent compression and quality.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="help-topic" id="quality">
+                        <h2>Quality Settings</h2>
+                        <div class="format-details">
+                            <div class="format-item">
+                                <strong>High Quality (320 kbps)</strong>
+                                <p>Best audio quality, larger file sizes. Recommended for music archiving.</p>
+                            </div>
+                            <div class="format-item">
+                                <strong>Standard Quality (192 kbps)</strong>
+                                <p>Good balance between quality and file size. Suitable for most uses.</p>
+                            </div>
+                            <div class="format-item">
+                                <strong>Low Quality (128 kbps)</strong>
+                                <p>Smaller files, acceptable quality for voice or streaming.</p>
+                            </div>
+                            <div class="format-item">
+                                <strong>Sample Rate</strong>
+                                <p>44.1 kHz (CD quality), 48 kHz (professional), 96 kHz (high-res audio)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="help-topic" id="batch">
+                        <h2>Batch Processing</h2>
+                        <div class="step-guide">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h3>Enable Batch Mode</h3>
+                                    <p>Check "Batch Conversion Mode" on the converter page.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h3>Select Multiple Files</h3>
+                                    <p>Drag and drop multiple files or use "Browse Files" to select many at once.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h3>Choose Output Format</h3>
+                                    <p>All files will be converted to the same format and quality settings.</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h3>Convert All</h3>
+                                    <p>Click "Convert All Files" to process all selected files simultaneously.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="help-topic" id="troubleshooting">
+                        <h2>Troubleshooting</h2>
+                        <div class="format-details">
+                            <div class="format-item">
+                                <strong>FFmpeg Not Found</strong>
+                                <p>Install FFmpeg: Windows (winget install ffmpeg), macOS (brew install ffmpeg), Linux (sudo apt install ffmpeg)</p>
+                            </div>
+                            <div class="format-item">
+                                <strong>File Won't Convert</strong>
+                                <p>Check if file is corrupted, try a different format, or ensure file isn't DRM-protected.</p>
+                            </div>
+                            <div class="format-item">
+                                <strong>Conversion Fails</strong>
+                                <p>Restart the application, check available disk space, or try smaller files.</p>
+                            </div>
+                            <div class="format-item">
+                                <strong>Poor Audio Quality</strong>
+                                <p>Increase bitrate settings, use lossless formats (FLAC/WAV) for best quality.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="help-topic" id="shortcuts">
+                        <h2>Keyboard Shortcuts</h2>
+                        <div class="format-details">
+                            <div class="format-item">
+                                <strong>Ctrl+O</strong>
+                                <p>Open audio file</p>
+                            </div>
+                            <div class="format-item">
+                                <strong>Ctrl+Shift+O</strong>
+                                <p>Open multiple files</p>
+                            </div>
+                            <div class="format-item">
+                                <strong>Ctrl+Enter</strong>
+                                <p>Start conversion</p>
+                            </div>
+                            <div class="format-item">
+                                <strong>Escape</strong>
+                                <p>Cancel conversion</p>
+                            </div>
+                            <div class="format-item">
+                                <strong>Ctrl+B</strong>
+                                <p>Toggle batch mode</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="status-bar">
+            <div class="status-left">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>Help & Support</span>
+                </div>
+                <span>Find answers and get help</span>
+            </div>
+            <div class="status-right">
+                <button class="back-btn" id="backToHome">← Back to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/help.js"></script>
+</body>
+</html>

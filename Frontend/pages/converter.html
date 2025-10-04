@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AUDIOKING - Audio Converter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/converter.css" />
+  <link rel="stylesheet" href="../css/theme.css" />
+  <style>
+    /* Enhanced styling for new features */
+    .batch-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+      padding: 10px;
+      background: rgba(45, 45, 45, 0.5);
+      border-radius: 8px;
+      border: 1px solid #2a2a2a;
+    }
+    .batch-toggle input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #6366f1;
+    }
+    .batch-files-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin: 10px 0;
+      padding: 10px;
+      background: rgba(35, 35, 35, 0.8);
+      border-radius: 8px;
+      border: 1px solid #2a2a2a;
+    }
+    .batch-file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      margin: 5px 0;
+      background: rgba(45, 45, 45, 0.6);
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    .batch-file-remove {
+      background: #dc3545;
+      border: none;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    .slider-container {
+      margin: 15px 0;
+    }
+    .slider-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .slider-input {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(100, 100, 100, 0.3);
+      outline: none;
+      accent-color: var(--audio-primary);
+    }
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #909090;
+    }
+    .slider-value {
+      text-align: center;
+      font-weight: 600;
+      color: #6366f1;
+      margin: 5px 0;
+    }
+    .format-card.selected {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: #6366f1;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    .quality-presets {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .preset-btn {
+      padding: 8px 12px;
+      background: rgba(45, 45, 45, 0.8);
+      border: 1px solid #2a2a2a;
+      color: #d0d0d0;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+    }
+    .preset-btn:hover, .preset-btn.active {
+      background: #6366f1;
+      color: white;
+      border-color: #6366f1;
+    }
+    .youtube-section {
+      margin-bottom: 20px;
+      padding: 20px;
+      background: rgba(45, 45, 45, 0.6);
+      border-radius: 12px;
+      border: 1px solid #2a2a2a;
+    }
+    .youtube-input-container {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .youtube-input {
+      flex: 1;
+      padding: 12px;
+      background: rgba(35, 35, 35, 0.8);
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+    }
+    .youtube-btn {
+      padding: 12px 20px;
+      background: #ff0000;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .youtube-btn:hover {
+      background: #cc0000;
+    }
+    .youtube-info {
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(35, 35, 35, 0.8);
+      border-radius: 8px;
+      border: 1px solid #2a2a2a;
+    }
+    .upload-divider {
+      text-align: center;
+      margin: 20px 0;
+      position: relative;
+      color: #666;
+    }
+    .upload-divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #333;
+      z-index: 1;
+    }
+    .upload-divider span {
+      background: #1a1a1a;
+      padding: 0 15px;
+      position: relative;
+      z-index: 2;
+    }
+    .format-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    .format-card {
+      padding: 20px 15px;
+      background: rgba(45, 45, 45, 0.6);
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .format-card:hover {
+      background: rgba(60, 60, 60, 0.8);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+    .format-icon {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .format-card h4 {
+      margin: 8px 0 5px 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .format-card p {
+      font-size: 0.9rem;
+      color: #d0d0d0;
+      margin: 5px 0 8px 0;
+    }
+    .format-card small {
+      font-size: 0.8rem;
+      color: #909090;
+      line-height: 1.3;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-window">
+    <div class="floating-decor">
+    <div class="floating-element audio-wave"></div>
+    <div class="floating-element audio-note"></div>
+    <div class="floating-element audio-frequency"></div>
+    <div class="floating-element audio-pulse"></div>
+    <div class="floating-element audio-spectrum"></div>
+    <div class="floating-element audio-waveform"></div>
+  </div>
+
+  <div class="menu-bar">
+    <a href="../pages/converter.html" id="convert-nav" class="menu-item active">Convert</a>
+    <a href="../pages/batch.html" id="batch-nav" class="menu-item">Batch Process</a>
+    <a href="../pages/settings.html" id="settings-nav" class="menu-item">Settings</a>
+    <a href="../pages/help.html" id="help-nav" class="menu-item">Help</a>
+  </div>
+
+  <main class="main-container">
+    <div class="content-layout">
+      <div class="upload-section">
+        <!-- Batch Mode Toggle -->
+        <div class="batch-toggle">
+          <input type="checkbox" id="batchMode" />
+          <label for="batchMode">Batch Conversion Mode</label>
+          <span class="batch-info">(Convert multiple files at once)</span>
+        </div>
+
+        <!-- Single File Upload Area -->
+        <!-- YouTube URL Input -->
+        <div class="youtube-section" id="youtubeSection">
+          <div class="youtube-input-container">
+            <input type="url" id="youtubeUrl" placeholder="Paste YouTube URL here..." class="youtube-input" />
+            <button type="button" id="youtubeDownloadBtn" class="youtube-btn">📥 Download</button>
+          </div>
+          <div id="youtubeInfo" class="youtube-info" style="display: none;"></div>
+        </div>
+
+        <div class="upload-divider">
+          <span>OR</span>
+        </div>
+
+        <div class="upload-area" id="uploadArea" tabindex="0" role="button" aria-label="Upload audio file">
+          <div class="upload-content default-content" id="defaultContent">
+            <div class="upload-icon" aria-hidden="true">
+              <svg width="80" height="80" viewBox="0 0 100 100" fill="none">
+                <rect x="10" y="45" width="4" height="10" rx="2" fill="#666" />
+                <rect x="18" y="35" width="4" height="30" rx="2" fill="#999" />
+                <rect x="26" y="25" width="4" height="50" rx="2" fill="#333" />
+                <rect x="34" y="40" width="4" height="20" rx="2" fill="#666" />
+                <rect x="42" y="20" width="4" height="60" rx="2" fill="#999" />
+                <rect x="50" y="30" width="4" height="40" rx="2" fill="#333" />
+                <rect x="58" y="35" width="4" height="30" rx="2" fill="#666" />
+                <rect x="66" y="25" width="4" height="50" rx="2" fill="#999" />
+                <rect x="74" y="40" width="4" height="20" rx="2" fill="#333" />
+                <rect x="82" y="45" width="4" height="10" rx="2" fill="#666" />
+              </svg>
+            </div>
+            <h2 id="uploadTitle">
+              Drop your audio files here or
+              <button type="button" class="browse-link" id="browseLink">browse file</button>
+            </h2>
+            <p class="upload-description">
+              MP3, WAV, FLAC, OPUS and other formats supported.<br />
+              Upload up to 100 MB per file. Secure audio conversion.
+            </p>
+            <div class="debug-controls">
+              <button type="button" class="debug-btn" id="uploadBtn">Select Files</button>
+            </div>
+          </div>
+
+          <div class="upload-content file-selected-content" id="fileSelectedContent" style="display: none;">
+            <div class="file-icon" id="fileIcon">🎵</div>
+            <div class="file-info">
+              <h3 class="file-name" id="fileName">audio.mp3</h3>
+              <p class="file-details">
+                <span class="file-size" id="fileSize">—</span> •
+                <span class="file-type" id="fileType">—</span> •
+                <span class="audio-duration" id="audioDuration">—</span>
+              </p>
+              <div class="audio-info" id="audioInfo">
+                <span class="audio-bitrate" id="audioBitrate">—</span> •
+                <span class="audio-samplerate" id="audioSampleRate">—</span>
+              </div>
+              <button class="change-file-btn" id="changeFileBtn" type="button">Change Audio File</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Batch Files List -->
+        <div class="batch-files-list" id="batchFilesList" style="display: none;">
+          <h3>Selected Files (<span id="batchCount">0</span>)</h3>
+          <div id="batchFilesContainer"></div>
+          <button type="button" class="debug-btn" id="addMoreFiles" style="margin-top: 10px;">Add More Files</button>
+        </div>
+
+        <!-- Hidden file inputs -->
+        <input type="file" id="fileInput" accept="audio/*,.mp3,.wav,.flac,.opus" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;" />
+        <input type="file" id="batchFileInput" accept="audio/*,.mp3,.wav,.flac,.opus" multiple style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;" />
+
+        <!-- Audio Preview -->
+        <div class="audio-preview" id="audioPreview" style="display: none;">
+          <audio controls id="audioPlayer" preload="metadata"></audio>
+        </div>
+
+        <!-- Convert Form -->
+        <form id="convertForm" novalidate>
+          <div class="form-group">
+            <label for="outputFormat">Convert to</label>
+            <select id="outputFormat" name="outputFormat" required>
+              <option value="">Select Audio Format...</option>
+              <option value="mp3">MP3 - Most Compatible</option>
+              <option value="wav">WAV - Uncompressed Quality</option>
+              <option value="flac">FLAC - Lossless Compression</option>
+              <option value="opus">OPUS - Modern Efficient Codec</option>
+            </select>
+          </div>
+
+          <!-- Quality Settings for Compressed Formats -->
+          <div class="form-group quality-settings" id="qualitySettings" style="display: none;">
+            <label>Audio Quality Presets</label>
+            <div class="quality-presets">
+              <button type="button" class="preset-btn" data-preset="high">High<br>320 kbps</button>
+              <button type="button" class="preset-btn active" data-preset="medium">Standard<br>192 kbps</button>
+              <button type="button" class="preset-btn" data-preset="low">Low<br>128 kbps</button>
+              <button type="button" class="preset-btn" data-preset="custom">Custom</button>
+            </div>
+
+            <!-- Custom Quality Sliders -->
+            <div class="custom-quality" id="customQuality" style="display: none;">
+              <div class="slider-container">
+                <label>Bitrate</label>
+                <div class="slider-wrapper">
+                  <input type="range" id="bitrateSlider" class="slider-input" min="64" max="320" step="32" value="192" />
+                  <div class="slider-labels">
+                    <span>64 kbps</span>
+                    <span>320 kbps</span>
+                  </div>
+                  <div class="slider-value" id="bitrateValue">192 kbps</div>
+                </div>
+              </div>
+
+              <div class="slider-container">
+                <label>Sample Rate</label>
+                <div class="slider-wrapper">
+                  <input type="range" id="sampleRateSlider" class="slider-input" min="0" max="2" step="1" value="0" />
+                  <div class="slider-labels">
+                    <span>44.1 kHz</span>
+                    <span>48 kHz</span>
+                    <span>96 kHz</span>
+                  </div>
+                  <div class="slider-value" id="sampleRateValue">44.1 kHz</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="convert-btn">
+            <span class="btn-text" id="convertBtnText">Convert Audio</span>
+            <span class="btn-icon">🎵</span>
+          </button>
+        </form>
+
+        <!-- Messages and Progress -->
+        <div class="message-container">
+          <div id="statusMsg" class="status-message" style="display:none;"></div>
+          <div id="errorMsg" class="error-message" style="display:none;"></div>
+          <div id="successMsg" class="success-message" style="display:none;"></div>
+
+          <div id="conversionProgress" class="progress-container" style="display:none;">
+            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%;"></div></div>
+            <div class="progress-text">
+              <span id="progressPercent">0%</span>
+              <span id="progressStatus">Processing audio...</span>
+            </div>
+          </div>
+
+          <!-- Batch Progress -->
+          <div id="batchProgress" class="progress-container" style="display:none;">
+            <h4>Batch Conversion Progress</h4>
+            <div class="progress-bar"><div class="progress-fill" id="batchProgressFill" style="width:0%;"></div></div>
+            <div class="progress-text">
+              <span id="batchProgressText">Processing file 0 of 0</span>
+            </div>
+            <div id="batchProgressDetails" style="margin-top: 10px; font-size: 0.9rem; color: #909090;"></div>
+          </div>
+        </div>
+
+        <!-- Download Section -->
+        <div id="downloadSection" class="download-section" style="display:none;">
+          <div class="download-info">
+            <h3>Conversion Complete!</h3>
+            <p id="downloadDescription">Your audio file has been converted successfully.</p>
+          </div>
+          <div class="download-actions">
+            <a id="convertedFileLink" href="" download class="download-btn">Download Audio File</a>
+            <button id="downloadAllBtn" class="download-btn" type="button" style="display:none;">Download All Files</button>
+            <button id="convertAnotherBtn" class="convert-another-btn" type="button">Convert Another File</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Simplified Sidebar with Only 4 Format Cards -->
+      <div class="format-info-sidebar">
+        <h3>Select Audio Format</h3>
+        <div class="format-cards">
+          <div class="format-card" data-format="mp3" role="button" tabindex="0">
+            <div class="format-icon">🎵</div>
+            <h4>MP3</h4>
+            <p>Most compatible format</p>
+            <small>Lossy compression • Universal support • 64-320 kbps</small>
+          </div>
+
+          <div class="format-card" data-format="wav" role="button" tabindex="0">
+            <div class="format-icon">🎧</div>
+            <h4>WAV</h4>
+            <p>Uncompressed quality</p>
+            <small>Lossless • Large files • Studio standard</small>
+          </div>
+
+          <div class="format-card" data-format="flac" role="button" tabindex="0">
+            <div class="format-icon">🎶</div>
+            <h4>FLAC</h4>
+            <p>Lossless compression</p>
+            <small>50% smaller than WAV • No quality loss • Audiophile choice</small>
+          </div>
+
+          <div class="format-card" data-format="opus" role="button" tabindex="0">
+            <div class="format-icon">⚡</div>
+            <h4>OPUS</h4>
+            <p>Modern efficient codec</p>
+            <small>Best compression • Low latency • Superior to MP3</small>
+          </div>
+        </div>
+
+        <!-- Updated Quick Format Recommendations -->
+        <div style="margin-top: 20px; padding: 15px; background: rgba(45, 45, 45, 0.6); border-radius: 10px;">
+          <h4 style="margin-bottom: 10px; color: #6366f1;">Quick Recommendations</h4>
+          <div style="font-size: 0.85rem; line-height: 1.4;">
+            <p><strong>🎧 Best Quality:</strong> FLAC or WAV</p>
+            <p><strong>📱 Universal Playback:</strong> MP3 at 192-320 kbps</p>
+            <p><strong>🌐 Modern Web:</strong> OPUS at 128-256 kbps</p>
+            <p><strong>🗣️ Voice/Podcasts:</strong> OPUS at 64-96 kbps</p>
+            <p><strong>💾 Smallest Size:</strong> OPUS</p>
+            <p><strong>🎵 Archiving:</strong> FLAC (lossless + compressed)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/converter.js"></script>
+  <script>
+    // Apply theme on converter page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const theme = localStorage.getItem('theme');
+      if (theme === 'light') {
+        document.body.classList.remove('dark-theme');
+      } else {
+        document.body.classList.add('dark-theme');
+      }
+    });
+  </script>
+  </div>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings - AUDIOKING</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <link rel="stylesheet" href="../css/theme.css">
+</head>
+<body>
+    <div class="app-window">
+        <div class="menu-bar">
+            <a href="../pages/converter.html" id="convert-nav" class="menu-item">Convert</a>
+            <a href="../pages/batch.html" id="batch-nav" class="menu-item">Batch Process</a>
+            <a href="../pages/settings.html" id="settings-nav" class="menu-item active">Settings</a>
+            <a href="../pages/help.html" id="help-nav" class="menu-item">Help</a>
+        </div>
+
+        <main class="page-content">
+            <div class="page-header">
+                <div class="unlock-badge">
+                    <span class="unlock-icon">⚙️</span>
+                    <span>Customize Your Experience!</span>
+                    <span class="arrow">→</span>
+                </div>
+                <h1 class="page-title">Application Settings</h1>
+                <p class="page-subtitle">
+                    Configure AUDIOKING to match your workflow and preferences.
+                </p>
+            </div>
+
+            <div class="settings-container">
+                <div class="settings-section">
+                    <h3>Audio Quality Defaults</h3>
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label>Default Quality</label>
+                            <select id="defaultQuality">
+                                <option value="high">High (320 kbps)</option>
+                                <option value="medium" selected>Standard (192 kbps)</option>
+                                <option value="low">Low (128 kbps)</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label>Sample Rate</label>
+                            <select id="defaultSampleRate">
+                                <option value="44100" selected>44.1 kHz</option>
+                                <option value="48000">48 kHz</option>
+                                <option value="96000">96 kHz</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Output Preferences</h3>
+                    <div class="setting-item">
+                        <label>Default Output Location</label>
+                        <div class="folder-selector">
+                            <input type="text" id="outputFolder" value="Downloads" readonly>
+                            <button class="browse-folder-btn" id="browseOutputFolder">Browse</button>
+                        </div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="preserveMetadata" checked>
+                            <span>Preserve Original Metadata</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="autoDownload">
+                            <span>Auto-download Converted Files</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>Application</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="showNotifications" checked>
+                            <span>Show Desktop Notifications</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="darkTheme" checked>
+                            <span>Dark Theme</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="autoUpdates" checked>
+                            <span>Automatic Updates</span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label>Language</label>
+                        <select id="language">
+                            <option value="en" selected>English</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                            <option value="de">Deutsch</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-actions">
+                    <button class="save-btn" id="saveSettings">Save Settings</button>
+                    <button class="reset-btn" id="resetSettings">Reset to Default</button>
+                </div>
+            </div>
+        </main>
+
+        <div class="status-bar">
+            <div class="status-left">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>Settings</span>
+                </div>
+                <span>Configure your preferences</span>
+            </div>
+            <div class="status-right">
+                <button class="back-btn" id="backToHome">← Back to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/settings.js"></script>
+</body>
+</html>

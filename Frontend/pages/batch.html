@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Batch Processing - AUDIOKING</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <link rel="stylesheet" href="../css/theme.css">
+</head>
+<body>
+    <div class="app-window">
+        <div class="menu-bar">
+            <a href="../pages/converter.html" id="convert-nav" class="menu-item">Convert</a>
+            <a href="../pages/batch.html" id="batch-nav" class="menu-item active">Batch Process</a>
+            <a href="../pages/settings.html" id="settings-nav" class="menu-item">Settings</a>
+            <a href="../pages/help.html" id="help-nav" class="menu-item">Help</a>
+        </div>
+
+        <main class="page-content">
+            <div class="page-header">
+                <div class="unlock-badge">
+                    <span class="unlock-icon">⚡</span>
+                    <span>Batch Processing Power!</span>
+                    <span class="arrow">→</span>
+                </div>
+                <h1 class="page-title">Convert Multiple Files at Once</h1>
+                <p class="page-subtitle">
+                    Process hundreds of audio files simultaneously with advanced batch conversion tools.
+                </p>
+            </div>
+
+            <div class="batch-container">
+                <div class="batch-upload-area" id="batchUploadArea">
+                    <div class="upload-icon">📁</div>
+                    <h3>Select Multiple Files or Folders</h3>
+                    <p>Drop files here or click to browse</p>
+                    <button class="browse-btn" id="browseBatchFiles">Browse Files</button>
+                    <button class="browse-btn" id="browseFolders">Browse Folders</button>
+                </div>
+
+                <div class="batch-files-list" id="batchFilesList" style="display: none;">
+                    <h3>Selected Files (<span id="fileCount">0</span>)</h3>
+                    <div class="files-container" id="filesContainer"></div>
+                    <div class="batch-actions">
+                        <button class="clear-btn" id="clearFiles">Clear All</button>
+                        <button class="start-batch-btn" id="startBatch">Start Batch Conversion</button>
+                    </div>
+                </div>
+
+                <div class="batch-settings">
+                    <h3>Batch Conversion Settings</h3>
+                    <div class="setting-group">
+                        <label>Output Format</label>
+                        <select id="batchOutputFormat">
+                            <option value="mp3">MP3</option>
+                            <option value="wav">WAV</option>
+                            <option value="flac">FLAC</option>
+                            <option value="opus">OPUS</option>
+                        </select>
+                    </div>
+                    <div class="setting-group">
+                        <label>Quality</label>
+                        <select id="batchQuality">
+                            <option value="high">High (320 kbps)</option>
+                            <option value="medium" selected>Standard (192 kbps)</option>
+                            <option value="low">Low (128 kbps)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="batch-progress" id="batchProgress" style="display: none;">
+                    <h3>Conversion Progress</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="batchProgressFill"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressText">Processing...</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="status-bar">
+            <div class="status-left">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>Batch Mode</span>
+                </div>
+                <span>Ready for batch processing</span>
+            </div>
+            <div class="status-right">
+                <button class="back-btn" id="backToHome">← Back to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/batch.js"></script>
+</body>
+</html>

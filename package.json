@@ -1,0 +1,197 @@
+{
+  "name": "audioking",
+  "version": "1.0.0",
+  "description": "Universal Audio Converter built with Electron",
+  "main": "Backend/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build-win": "electron-builder --win",
+    "build-mac": "electron-builder --mac",
+    "build-linux": "electron-builder --linux",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --publish=never",
+    "postinstall": "electron-builder install-app-deps",
+    "test": "jest",
+    "test-conversion": "node test-conversion.js",
+    "lint": "eslint Backend/ --ext .js",
+    "check-ffmpeg": "node -e \"const {FFmpegInstaller} = require('./Backend/utils/ffmpegInstaller'); FFmpegInstaller.checkFFmpegInstallation().then(console.log);\"",
+    "clean": "rm -rf dist node_modules/.cache"
+  },
+  "keywords": [
+    "electron",
+    "audio",
+    "converter",
+    "ffmpeg",
+    "desktop",
+    "mp3",
+    "wav",
+    "flac",
+    "opus"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^26.0.0",
+    "electron-builder": "^24.0.0",
+    "electron-is-dev": "^2.0.0",
+    "electron-packager": "^17.1.2",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0",
+    "uuid": "^9.0.0"
+  },
+  "build": {
+    "appId": "com.audioking.app",
+    "productName": "AUDIOKING",
+    "artifactName": "${productName}-${version}-${arch}.${ext}",
+    "copyright": "Copyright © 2024 AUDIOKING",
+    "directories": {
+      "output": "dist",
+      "buildResources": "resources"
+    },
+    "files": [
+      "Backend/**/*",
+      "Frontend/**/*",
+      "assets/**/*",
+      "config/**/*",
+      "package.json",
+      "!**/node_modules/**/*",
+      "!src/**/*",
+      "!resources/electron.asar",
+      "!dist/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "resources/",
+        "to": "resources/",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "compression": "normal",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "assets/icons/icon.icns",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "darkModeSupport": true,
+      "hardenedRuntime": true,
+      "entitlements": "resources/entitlements.mac.plist",
+      "entitlementsInherit": "resources/entitlements.mac.plist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "publisherName": "AUDIOKING",
+      "verifyUpdateCodeSignature": false,
+      "signDlls": false,
+      "signAndEditExecutable": false,
+      "forceCodeSigning": false
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "tar.gz",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icons/icon.png",
+      "category": "AudioVideo;Audio;AudioVideoEditing",
+      "synopsis": "Universal Audio Converter",
+      "desktop": {
+        "Name": "AUDIOKING",
+        "Comment": "Convert audio files between MP3, WAV, FLAC, and OPUS",
+        "Categories": "AudioVideo;Audio;AudioVideoEditing;",
+        "MimeType": "audio/mpeg;audio/wav;audio/flac;audio/ogg;"
+      }
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AUDIOKING Audio Converter"
+    },
+    "dmg": {
+      "title": "${productName} ${version}",
+      "icon": "assets/icons/icon.icns",
+      "iconSize": 100,
+      "contents": [
+        {
+          "x": 380,
+          "y": 280,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 110,
+          "y": 280,
+          "type": "file"
+        }
+      ],
+      "window": {
+        "width": 540,
+        "height": 380
+      }
+    },
+    "appImage": {
+      "license": "LICENSE"
+    }
+  },
+  "homepage": "https://github.com/your-username/audioking",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/audioking.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/audioking/issues"
+  }
+}

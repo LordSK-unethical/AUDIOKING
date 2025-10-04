@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FFmpeg Setup - AUDIOKING</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .setup-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #1a1a1a;
+            border-radius: 12px;
+            border: 1px solid #333;
+        }
+        .setup-step {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #0f0f0f;
+            border-radius: 8px;
+            border-left: 4px solid #6366f1;
+        }
+        .command-box {
+            background: #000;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: monospace;
+            color: #0f0;
+            margin: 0.5rem 0;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-ok { background: #0f0; }
+        .status-error { background: #f00; }
+    </style>
+</head>
+<body>
+    <div class="app-window">
+        <header style="text-align: center; padding: 2rem;">
+            <h1>FFmpeg Setup Required</h1>
+            <p>AUDIOKING needs FFmpeg to convert audio files</p>
+        </header>
+
+        <div class="setup-container">
+            <div id="ffmpeg-status">
+                <h3>Installation Status</h3>
+                <p><span class="status-indicator status-error"></span>FFmpeg: Not installed</p>
+                <p><span class="status-indicator status-error"></span>FFprobe: Not installed</p>
+            </div>
+
+            <div id="installation-guide">
+                <h3>Installation Instructions</h3>
+                <div class="setup-step">
+                    <h4>Windows (Recommended)</h4>
+                    <p>Use Windows Package Manager:</p>
+                    <div class="command-box">winget install ffmpeg</div>
+                    <p>Or download from <a href="https://ffmpeg.org/download.html" target="_blank">ffmpeg.org</a></p>
+                </div>
+
+                <div class="setup-step">
+                    <h4>macOS</h4>
+                    <p>Use Homebrew:</p>
+                    <div class="command-box">brew install ffmpeg</div>
+                </div>
+
+                <div class="setup-step">
+                    <h4>Linux</h4>
+                    <p>Ubuntu/Debian:</p>
+                    <div class="command-box">sudo apt install ffmpeg</div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button id="check-again" class="start-converting-btn">Check Installation</button>
+                <button id="continue-anyway" class="learn-more-btn">Continue Without FFmpeg</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('check-again').addEventListener('click', async () => {
+            if (window.electronAPI && window.electronAPI.checkFFmpegInstallation) {
+                const status = await window.electronAPI.checkFFmpegInstallation();
+                if (status.ready) {
+                    alert('FFmpeg is now installed! Redirecting to converter...');
+                    window.location.href = 'converter.html';
+                } else {
+                    alert('FFmpeg still not detected. Please ensure it is properly installed and in your PATH.');
+                }
+            }
+        });
+
+        document.getElementById('continue-anyway').addEventListener('click', () => {
+            if (confirm('Audio conversion will not work without FFmpeg. Continue anyway?')) {
+                window.location.href = 'converter.html';
+            }
+        });
+    </script>
+</body>
+</html>
