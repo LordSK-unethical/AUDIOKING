@@ -1,67 +1,58 @@
-const { spawn } = require('child_process');
+const { ExecutableManager } = require('./executableManager');
 const path = require('path');
 const fs = require('fs').promises;
 
 class FFmpegInstaller {
+  constructor() {
+    this.execManager = new ExecutableManager();
+  }
+
   static async checkFFmpegInstallation() {
+    const installer = new FFmpegInstaller();
+    return await installer.checkInstallation();
+  }
+
+  async checkInstallation() {
     try {
-      const hasFFmpeg = await this.isFFmpegAvailable();
-      const hasFFprobe = await this.isFFprobeAvailable();
+      const ffmpegPath = this.execManager.getFFmpegPath();
+      const ffprobePath = this.execManager.getFFprobePath();
+      
+      // Check bundled executables first
+      const hasFFmpeg = await this.execManager.checkExecutable(ffmpegPath) && 
+                       await this.execManager.testExecutable(ffmpegPath);
+      const hasFFprobe = await this.execManager.checkExecutable(ffprobePath) && 
+                        await this.execManager.testExecutable(ffprobePath);
+      
+      if (hasFFmpeg && hasFFprobe) {
+        return {
+          ffmpeg: true,
+          ffprobe: true,
+          ready: true,
+          ffmpegPath,
+          ffprobePath,
+          source: 'bundled'
+        };
+      }
+      
+      // Fallback to system PATH
+      const systemFFmpeg = await this.isSystemExecutableAvailable('ffmpeg');
+      const systemFFprobe = await this.isSystemExecutableAvailable('ffprobe');
       
       return {
-        ffmpeg: hasFFmpeg,
-        ffprobe: hasFFprobe,
-        ready: hasFFmpeg && hasFFprobe
+        ffmpeg: systemFFmpeg,
+        ffprobe: systemFFprobe,
+        ready: systemFFmpeg && systemFFprobe,
+        ffmpegPath: systemFFmpeg ? 'ffmpeg' : null,
+        ffprobePath: systemFFprobe ? 'ffprobe' : null,
+        source: (systemFFmpeg && systemFFprobe) ? 'system' : 'none'
       };
     } catch (error) {
       return { ffmpeg: false, ffprobe: false, ready: false, error: error.message };
     }
   }
 
-  static async isFFmpegAvailable() {
-    return new Promise((resolve) => {
-      const proc = spawn('ffmpeg', ['-version']);
-      let settled = false;
-      
-      proc.on('close', (code) => {
-        if (!settled) { settled = true; resolve(code === 0); }
-      });
-      
-      proc.on('error', () => {
-        if (!settled) { settled = true; resolve(false); }
-      });
-      
-      setTimeout(() => {
-        if (!settled) {
-          settled = true;
-          try { proc.kill(); } catch {}
-          resolve(false);
-        }
-      }, 3000);
-    });
-  }
-
-  static async isFFprobeAvailable() {
-    return new Promise((resolve) => {
-      const proc = spawn('ffprobe', ['-version']);
-      let settled = false;
-      
-      proc.on('close', (code) => {
-        if (!settled) { settled = true; resolve(code === 0); }
-      });
-      
-      proc.on('error', () => {
-        if (!settled) { settled = true; resolve(false); }
-      });
-      
-      setTimeout(() => {
-        if (!settled) {
-          settled = true;
-          try { proc.kill(); } catch {}
-          resolve(false);
-        }
-      }, 3000);
-    });
+  async isSystemExecutableAvailable(execName) {
+    return await this.execManager.testExecutable(execName, ['-version']);
   }
 
   static getInstallationInstructions() {

@@ -17,6 +17,7 @@
     "test-conversion": "node test-conversion.js",
     "lint": "eslint Backend/ --ext .js",
     "check-ffmpeg": "node -e \"const {FFmpegInstaller} = require('./Backend/utils/ffmpegInstaller'); FFmpegInstaller.checkFFmpegInstallation().then(console.log);\"",
+    "setup-executables": "node scripts/setup-executables.js",
     "clean": "rm -rf dist node_modules/.cache"
   },
   "keywords": [
@@ -58,6 +59,8 @@
       "Frontend/**/*",
       "assets/**/*",
       "config/**/*",
+      "bin/**/*",
+      "scripts/**/*",
       "package.json",
       "!**/node_modules/**/*",
       "!src/**/*",

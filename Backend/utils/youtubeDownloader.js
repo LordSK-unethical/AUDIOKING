@@ -3,12 +3,18 @@ const fs = require('fs').promises;
 const path = require('path');
 const os = require('os');
 const crypto = require('crypto');
+const { YtDlpInstaller } = require('./ytdlpInstaller');
+const { ExecutableManager } = require('./executableManager');
 
 class YouTubeDownloader {
   constructor() {
     this.onProgress = null;
-    this.currentDownloadId = null; // Track current download
+    this.currentDownloadId = null;
+    this.ytDlpInstaller = new YtDlpInstaller();
+    this.execManager = new ExecutableManager();
   }
+
+
 
   async downloadAudio(url, options = {}) {
     try {
@@ -17,35 +23,52 @@ class YouTubeDownloader {
         throw new Error('Invalid YouTube URL format');
       }
 
+      // Check yt-dlp availability
+      const ytDlpStatus = await this.ytDlpInstaller.checkInstallation();
+      if (!ytDlpStatus.available) {
+        throw new Error('yt-dlp.exe not found. Please ensure yt-dlp.exe is in the scripts directory.');
+      }
+
       const outputDir = path.join(os.tmpdir(), 'audioking-downloads');
-      
-      // Use async fs.mkdir instead of sync
       await fs.mkdir(outputDir, { recursive: true });
       
-      // Generate a unique download ID for this session
       this.currentDownloadId = crypto.randomBytes(8).toString('hex');
-      
-      // Improved output template with unique session ID
       const outputTemplate = path.join(outputDir, `yt-${this.currentDownloadId}-%(id)s-%(title).50s.%(ext)s`);
       
-      return new Promise((resolve, reject) => {
+      return new Promise(async (resolve, reject) => {
         const ytDlpArgs = [
-          '--format', 'bestaudio/best',
+          '--format', 'best[height<=720]/best',
           '--extract-audio',
           '--audio-format', 'mp3',
-          '--audio-quality', '0', // Best quality
+          '--audio-quality', '0',
           '--output', outputTemplate,
-          '--no-playlist', // Only download single video
-          '--no-check-certificate',
-          '--extractor-args', 'youtube:player_client=android',
-          '--ignore-errors', // Continue on minor errors
+          '--no-playlist',
+          '--ignore-errors',
           '--no-warnings',
-          '--force-overwrites', // Ensure fresh downloads
-          url
+          '--force-overwrites'
         ];
-
-        const ytDlp = spawn('yt-dlp', ytDlpArgs);
-
+        
+        // Get FFmpeg path for yt-dlp
+        const ffmpegPath = this.execManager.getFFmpegPath();
+        const ffmpegExists = await this.execManager.checkExecutable(ffmpegPath);
+        
+        if (ffmpegExists) {
+          ytDlpArgs.push('--ffmpeg-location', ffmpegPath);
+        } else {
+          // Try system FFmpeg
+          const systemFFmpeg = await this.execManager.testExecutable('ffmpeg', ['-version']);
+          if (systemFFmpeg) {
+            ytDlpArgs.push('--ffmpeg-location', 'ffmpeg');
+          }
+        }
+        
+        ytDlpArgs.push(url);
+        
+        console.log('Using yt-dlp:', ytDlpStatus.path);
+        console.log('yt-dlp args:', ytDlpArgs.join(' '));
+        
+        const ytDlp = spawn(ytDlpStatus.path, ytDlpArgs);
+        
         let outputPath = '';
         let title = '';
         let currentProgress = 0;
@@ -116,7 +139,11 @@ class YouTubeDownloader {
           errorOutput += error;
           console.error(`yt-dlp stderr: ${error}`);
           
-          // Handle specific error cases
+          // Log parsing errors but don't reject immediately - file might still be downloaded
+          if (error.includes('expected string or bytes-like object') || error.includes('NoneType')) {
+            console.warn('yt-dlp parsing error (continuing):', error.trim());
+          }
+          
           if (error.includes('Video unavailable') || error.includes('Private video')) {
             reject(new Error('Video is unavailable or private'));
             return;
@@ -133,7 +160,7 @@ class YouTubeDownloader {
 
         ytDlp.on('error', (error) => {
           if (error.code === 'ENOENT') {
-            reject(new Error('yt-dlp not found. Please install yt-dlp: pip install yt-dlp'));
+            reject(new Error('yt-dlp.exe not found. Please ensure yt-dlp.exe is available.'));
           } else {
             reject(new Error(`Failed to start yt-dlp: ${error.message}`));
           }
@@ -141,50 +168,42 @@ class YouTubeDownloader {
 
         ytDlp.on('close', async (code) => {
           console.log(`yt-dlp process closed with code: ${code}`);
-          console.log(`Expected output path: ${outputPath}`);
           
-          if (code === 0) {
-            try {
-              // If we don't have the output path, try to find it using our unique ID
-              if (!outputPath || !(await this.fileExists(outputPath))) {
-                console.log('Output path not detected, searching for file...');
-                outputPath = await this.findDownloadedFileById(outputDir, this.currentDownloadId);
+          // Always try to find the downloaded file regardless of exit code
+          try {
+            let foundPath = outputPath;
+            
+            if (!foundPath || !(await this.fileExists(foundPath))) {
+              foundPath = await this.findDownloadedFileById(outputDir, this.currentDownloadId);
+            }
+            
+            if (!foundPath) {
+              foundPath = await this.findDownloadedFileByVideoId(outputDir, videoId);
+            }
+            
+            if (foundPath && await this.fileExists(foundPath)) {
+              const stats = await fs.stat(foundPath);
+              
+              if (this.onProgress) {
+                this.onProgress({ progress: 100, status: 'Download complete' });
               }
               
-              if (outputPath && await this.fileExists(outputPath)) {
-                const stats = await fs.stat(outputPath);
-                
-                // Final progress update
-                if (this.onProgress) {
-                  this.onProgress({ progress: 100, status: 'Download complete' });
-                }
-                
-                resolve({
-                  filePath: outputPath,
-                  title: title || this.extractTitleFromPath(outputPath) || 'YouTube Audio',
-                  duration: null,
-                  fileSize: stats.size,
-                  downloadId: this.currentDownloadId
-                });
-              } else {
-                // Last resort: try to find any file with the video ID
-                const fallbackPath = await this.findDownloadedFileByVideoId(outputDir, videoId);
-                if (fallbackPath && await this.fileExists(fallbackPath)) {
-                  const stats = await fs.stat(fallbackPath);
-                  resolve({
-                    filePath: fallbackPath,
-                    title: this.extractTitleFromPath(fallbackPath) || 'YouTube Audio',
-                    duration: null,
-                    fileSize: stats.size,
-                    downloadId: this.currentDownloadId
-                  });
-                } else {
-                  reject(new Error('Download completed but file not found'));
-                }
-              }
-            } catch (error) {
-              reject(new Error(`Post-download verification failed: ${error.message}`));
+              resolve({
+                filePath: foundPath,
+                title: title || this.extractTitleFromPath(foundPath) || 'YouTube Audio',
+                duration: null,
+                fileSize: stats.size,
+                downloadId: this.currentDownloadId
+              });
+              return;
             }
+          } catch (error) {
+            console.error('File search error:', error);
+          }
+          
+          // If no file found, reject with appropriate error
+          if (code === 0) {
+            reject(new Error('Download completed but output file not found'));
           } else {
             const errorMsg = this.parseError(errorOutput) || `Process exited with code: ${code}`;
             reject(new Error(`YouTube download failed: ${errorMsg}`));
@@ -225,9 +244,8 @@ class YouTubeDownloader {
     try {
       const files = await fs.readdir(outputDir);
       const matchingFiles = files
-        .filter(f => f.includes(downloadId) && f.endsWith('.mp3'))
+        .filter(f => f.includes(downloadId) && (f.endsWith('.mp3') || f.endsWith('.mp4') || f.endsWith('.webm')))
         .sort((a, b) => {
-          // Sort by modification time (newest first)
           try {
             const statsA = require('fs').statSync(path.join(outputDir, a));
             const statsB = require('fs').statSync(path.join(outputDir, b));
@@ -305,8 +323,13 @@ class YouTubeDownloader {
         throw new Error('Invalid YouTube URL format');
       }
 
+      const ytDlpStatus = await this.ytDlpInstaller.checkInstallation();
+      if (!ytDlpStatus.available) {
+        throw new Error('yt-dlp.exe not found. Please ensure yt-dlp.exe is available.');
+      }
+
       return new Promise((resolve, reject) => {
-        const ytDlp = spawn('yt-dlp', [
+        const ytDlp = spawn(ytDlpStatus.path, [
           '--print', 'title',
           '--print', 'duration', 
           '--print', 'thumbnail',
@@ -328,7 +351,7 @@ class YouTubeDownloader {
         
         ytDlp.on('error', (error) => {
           if (error.code === 'ENOENT') {
-            reject(new Error('yt-dlp not found. Please install yt-dlp: pip install yt-dlp'));
+            reject(new Error('yt-dlp.exe not found. Please ensure yt-dlp.exe is available.'));
           } else {
             reject(new Error(`Failed to get video info: ${error.message}`));
           }
@@ -396,6 +419,8 @@ class YouTubeDownloader {
   parseError(errorOutput) {
     if (!errorOutput) return null;
     
+    if (errorOutput.includes('expected string or bytes-like object')) return 'YouTube parsing error - video may be unavailable';
+    if (errorOutput.includes('NoneType')) return 'YouTube data parsing failed - try updating yt-dlp';
     if (errorOutput.includes('Video unavailable')) return 'Video is unavailable';
     if (errorOutput.includes('Private video')) return 'Video is private';
     if (errorOutput.includes('Sign in to confirm')) return 'Age-restricted video';

@@ -2,40 +2,45 @@ const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs').promises;
 const os = require('os');
+const { FFmpegInstaller } = require('../utils/ffmpegInstaller');
+const { ExecutableManager } = require('../utils/executableManager');
 
 class AudioProcessor {
   constructor() {
     this.onProgress = null;
     this.totalDuration = null;
+    this.execManager = new ExecutableManager();
   }
 
   async convertAudio(inputPath, options) {
     console.log('[Processor] convertAudio()', { inputPath, options });
 
-    // Always ensure output dir
     const outDir = path.join(os.tmpdir(), 'audioking-output');
     await fs.mkdir(outDir, { recursive: true });
 
     const base = path.basename(inputPath, path.extname(inputPath));
     const outputPath = path.join(outDir, `${base}-${Date.now()}.${options.outputFormat}`);
 
-    // 1) Sanity: try FFmpeg
-    const hasFFmpeg = await this.isFFmpegAvailable();
-    if (!hasFFmpeg) {
-      console.warn('[Processor] ffmpeg not found. Returning stub conversion for wiring test.');
-      // STUB: Write a tiny file to prove success path
-      await fs.writeFile(outputPath, Buffer.from('AUDIOKING-STUB'));
-      if (this.onProgress) this.onProgress({ progress: 100, status: 'Complete (stub)' });
-      return { outputPath, filename: path.basename(outputPath), size: (await fs.stat(outputPath)).size };
+    // Check FFmpeg availability
+    const ffmpegStatus = await FFmpegInstaller.checkFFmpegInstallation();
+    if (!ffmpegStatus.ready) {
+      throw new Error('FFmpeg not available. Please install FFmpeg or place ffmpeg.exe in the bin directory.');
     }
 
-    // 2) Real conversion via FFmpeg
-    this.totalDuration = await this.getDurationWithFFprobe(inputPath);
+    // Get the correct FFmpeg executable path
+    const ffmpegPath = ffmpegStatus.ffmpegPath;
+    const ffprobePath = ffmpegStatus.ffprobePath;
+    
+    console.log('[Processor] Using FFmpeg:', ffmpegPath);
+    console.log('[Processor] Using FFprobe:', ffprobePath);
+
+    // Get duration for progress tracking
+    this.totalDuration = await this.getDurationWithFFprobe(inputPath, ffprobePath);
     const args = this.buildArgs(inputPath, outputPath, options);
     console.log('[Processor] ffmpeg', args.join(' '));
 
     await new Promise((resolve, reject) => {
-      const proc = spawn('ffmpeg', args);
+      const proc = spawn(ffmpegPath, args);
 
       proc.stderr.on('data', (d) => {
         const s = d.toString();
@@ -108,19 +113,9 @@ class AudioProcessor {
     return null;
     }
 
-  async isFFmpegAvailable() {
+  async getDurationWithFFprobe(input, ffprobePath = 'ffprobe') {
     return new Promise((resolve) => {
-      const p = spawn('ffmpeg', ['-version']);
-      let settled = false;
-      p.on('close', (code) => { if (!settled) { settled = true; resolve(code === 0); } });
-      p.on('error', () => { if (!settled) { settled = true; resolve(false); } });
-      setTimeout(() => { if (!settled) { settled = true; try { p.kill(); } catch {} resolve(false); } }, 3000);
-    });
-  }
-
-  async getDurationWithFFprobe(input) {
-    return new Promise((resolve) => {
-      const p = spawn('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'default=nw=1:nk=1', input]);
+      const p = spawn(ffprobePath, ['-v', 'error', '-show_entries', 'format=duration', '-of', 'default=nw=1:nk=1', input]);
       let out = '';
       p.stdout.on('data', (d) => { out += d.toString(); });
       p.on('close', () => {
